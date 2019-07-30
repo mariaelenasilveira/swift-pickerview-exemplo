@@ -10,14 +10,23 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    @IBOutlet weak var selecionePaisTextField: UITextField!
-    @IBOutlet weak var selecioneEstadoTextField: UITextField!
+    @IBOutlet weak var cidadePartidaTextField: UITextField!
+    @IBOutlet weak var cidadeDestinoTextField: UITextField!
+    
+    @IBOutlet var mensagemRespostaLabel: UIView!
+    @IBOutlet weak var okBotao: UIButton!
+    
+    @IBOutlet weak var dataPartidaTextField: UITextField!
+    @IBOutlet weak var dataRetornoTextField: UITextField!
+    
+    
     var textFieldPickerView: UITextField?
     
-    let listaPaises = ["Brasil", "EUA", "Argentina", "Chile", "Portugal", "Canadá", "México", "Peru"]
-    let listaEstados  = ["RN", "Pb", "Pe", "Ba", "RJ", "RS", "BH"]
+    let listaCidadesPartida = ["Areia Branca", "Caicó", "Currais Novos", "Ceará Mirim", "Extremoz", "Florânia", "Galinhos", "Goianinha", "João Câmara", "Jandaíra", "Macau", "Mossoró", "Macaíba", "Natal", "Parnamirim", "São José de Mipibú"]
+    let listaCidadesDestino = ["Alto do Rodrigues","Brejoes", "Caiçara", "Fortaleza", "Recife", "Joao Pessoa", "Salvador", "Olinda", "Terezina", "Sao Luis","Maceió"]
     var listaPickerView: [String] = []
-    var nome: String = ""
+    
+    var cidadeSelecionada: String = ""
     let pickerView = UIPickerView()
     
     override func viewDidLoad() {
@@ -25,6 +34,8 @@ class ViewController: UIViewController {
        
         configurarPickerView()
     }
+    
+    // Nessa configuracao foi adicionado ao pickerview a barra com opcoes ok e cancelar
     
     private func configurarPickerView(){
         let toolBar = UIToolbar()
@@ -42,11 +53,11 @@ class ViewController: UIViewController {
         pickerView.showsSelectionIndicator = true
         pickerView.delegate = self
         pickerView.dataSource = self
-        selecionePaisTextField.inputView = pickerView
-        selecionePaisTextField.inputAccessoryView = toolBar
+        cidadePartidaTextField.inputView = pickerView
+        cidadePartidaTextField.inputAccessoryView = toolBar
         
-        selecioneEstadoTextField.inputView = pickerView
-        selecioneEstadoTextField.inputAccessoryView = toolBar
+        cidadeDestinoTextField.inputView = pickerView
+        cidadeDestinoTextField.inputAccessoryView = toolBar
     }
     
 }
@@ -55,19 +66,21 @@ class ViewController: UIViewController {
 extension ViewController: UITextFieldDelegate, UITextViewDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         textFieldPickerView = textField
+        
+        // ao iniciar a edicao do textField, seleciona com qual lista vamos o popular
         switch textField {
-        case selecioneEstadoTextField:
-            nome = listaEstados.first!
-            listaPickerView = listaEstados
+        case cidadePartidaTextField:
+            cidadeSelecionada = listaCidadesPartida.first!
+            listaPickerView = listaCidadesPartida
         default:
-            nome = listaPaises.first!
-            listaPickerView = listaPaises
+            cidadeSelecionada = listaCidadesDestino.first!
+            listaPickerView = listaCidadesDestino
         }
     }
     
     @objc func okClick() {
         if let textFieldPickerView = textFieldPickerView {
-            textFieldPickerView.text = nome
+            textFieldPickerView.text = cidadeSelecionada
             textFieldPickerView.resignFirstResponder()
             self.textFieldPickerView = nil
         }
@@ -75,6 +88,7 @@ extension ViewController: UITextFieldDelegate, UITextViewDelegate {
     
     @objc func cancelarClick() {
         if let textFieldPickerView = textFieldPickerView {
+            cidadeSelecionada = ""
             textFieldPickerView.text = nil
             textFieldPickerView.resignFirstResponder()
             self.textFieldPickerView = nil
@@ -97,7 +111,7 @@ extension ViewController: UIPickerViewDataSource, UIPickerViewDelegate {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        nome = listaPickerView[row]
+        cidadeSelecionada = listaPickerView[row]
     }
     
     
