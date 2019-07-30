@@ -28,6 +28,7 @@ class ViewController: UIViewController {
     
     var cidadeSelecionada: String = ""
     let pickerView = UIPickerView()
+    let datePicker = UIDatePicker()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,8 +36,7 @@ class ViewController: UIViewController {
         configurarPickerView()
     }
     
-    // Nessa configuracao foi adicionado ao pickerview a barra com opcoes ok e cancelar
-    
+    // Nessa configuracao foi adicionado ao pickerview e ao datePicker a barra com opcoes ok e cancelar
     private func configurarPickerView(){
         let toolBar = UIToolbar()
         toolBar.barStyle = UIBarStyle.default
@@ -50,14 +50,21 @@ class ViewController: UIViewController {
         toolBar.setItems([cancelarButton, spaceButton, okButton], animated: false)
         toolBar.isUserInteractionEnabled = true
         
+        //PickerView
         pickerView.showsSelectionIndicator = true
         pickerView.delegate = self
         pickerView.dataSource = self
         cidadePartidaTextField.inputView = pickerView
         cidadePartidaTextField.inputAccessoryView = toolBar
-        
         cidadeDestinoTextField.inputView = pickerView
         cidadeDestinoTextField.inputAccessoryView = toolBar
+        
+        //DatePicker
+        datePicker.datePickerMode = .date
+        dataPartidaTextField.inputView = datePicker
+        dataPartidaTextField.inputAccessoryView = toolBar
+        dataRetornoTextField.inputView = datePicker
+        dataRetornoTextField.inputAccessoryView = toolBar
     }
     
 }
@@ -79,11 +86,16 @@ extension ViewController: UITextFieldDelegate, UITextViewDelegate {
     }
     
     @objc func okClick() {
-        if let textFieldPickerView = textFieldPickerView {
+        guard let textFieldPickerView = textFieldPickerView else { return }
+        if textFieldPickerView == dataPartidaTextField || textFieldPickerView == dataRetornoTextField {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd/MM/yyyy"
+            textFieldPickerView.text = formatter.string(from: datePicker.date)
+        } else {
             textFieldPickerView.text = cidadeSelecionada
             textFieldPickerView.resignFirstResponder()
-            self.textFieldPickerView = nil
         }
+        self.view.endEditing(true)
     }
     
     @objc func cancelarClick() {
@@ -91,8 +103,8 @@ extension ViewController: UITextFieldDelegate, UITextViewDelegate {
             cidadeSelecionada = ""
             textFieldPickerView.text = nil
             textFieldPickerView.resignFirstResponder()
-            self.textFieldPickerView = nil
         }
+        self.view.endEditing(true)
     }
 }
 
